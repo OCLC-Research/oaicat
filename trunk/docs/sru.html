@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+  <head>
+    <title>OAICat - SRW/U Implementation</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link href="oaicat.css" rel="stylesheet" type="text/css">
+  </head>
+  <body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+    <table width="100%" border="0" cellspacing="20" cellpadding="0">
+      <tr valign="top">
+	<td bgcolor="#669933">
+	  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+	    <tr valign="top">
+	      <td width="50%"><a href="index.html"><img src="banner01.gif" alt="OAICat - An OAI-PMH v2 Repository Framework" width="388" height="120" border="0"></a></td>
+	      <td width="50%" align="right"><a href="http://www.oclc.org/research/"><img src="banner02.gif" alt="A Project of OCLC Research" width="202" height="120" border="0"></a></td>
+	    </tr>
+	  </table>
+	</td>
+      </tr>
+      <tr valign="top">
+	<td>
+	  <h2>SRW/U Implementation</h2>
+	  <p>An SRW/U implementation is included with the OAICat package. Any SRW/U database can be configured for OAI access if it conforms to the following (prototype) profile:
+	  </p>
+	  <ul>
+	    <li>An oai.identifier index</li>
+	    <li>An oai.datestamp index</li>
+	    <li>An oai.set scan index (not implemented yet)</li>
+	    <li>An OaiHeader recordSchema</li>
+	  </ul>
+	  <p>Caveat: the details of this profile are still being debated and could change.</p>
+	  <p>To configure OAICat to use the SRW/U implementation, simply rename the sru.properties file to oaicat.properties and bounce the server. If this demo works, edit the oaicat.properties file to change the SRWOAICatalog.sruURL to the target SRW/U service URL and bounce the server again.</p>
+	</td>
+      </tr>
+      <tr valign="top">
+	<td bgcolor="#669933" height="1"></td>
+      </tr>
+      <tr valign="top">
+	<td><a href="http://www.oclc.org/research/software/oai/cat.shtm"><img border="0" src="oaicat_icon.gif" alt="OAICat - An OAI-PMH v2 Repository Framework" width="120" height="60"></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.openarchives.org"><img border="0" src="http://www.openarchives.org/images/OA100.gif"/></a></td>
+      </tr>
+      <tr valign="top">
+	<td><address><a href="mailto:jyoung@oclc.org">Jeff Young</a></address><span class="footer">
+	    <!-- Created: Wed Oct  2 16:53:15 EDT 2002 -->
+	    <!-- hhmts start -->
+	    Last modified: Tue Oct 14 10:28:18 EDT 2003
+	    <!-- hhmts end -->
+	  </span></td>
+      </tr>
+    </table>
+  </body>
+</html>
