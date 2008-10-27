@@ -1,5 +1,9 @@
 OAICat version file. This file records major changes to the OAICat software.
 
+2008-10-27 1.5.56
+Bug Fix:
+- Change toolkit.xsd reference to the alcme.oclc.org domain since the VT version vanished
+
 2007-11-01 1.5.55
 Enhancement:
 - Make OAIHandler.getAttributes methods public
