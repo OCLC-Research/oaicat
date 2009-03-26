@@ -1310,10 +1310,10 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
                 System.out.println("Persistent connection has expired.");
                 persistentConnection = getNewConnection();
             }
-            return persistentConnection;
         } else {
-            return getNewConnection();
+            persistentConnection = getNewConnection();
         }
+        return persistentConnection;
     }
 
     /**
