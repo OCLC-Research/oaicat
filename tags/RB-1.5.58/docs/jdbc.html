@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<title>OAICat - JDBC Implementation</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="oaicat.css" rel="stylesheet" type="text/css">
+</head>
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<table width="100%" border="0" cellspacing="20" cellpadding="0">
+<tr valign="top">
+<td bgcolor="#669933">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr valign="top">
+<td width="50%"><a href="index.html"><img src="banner01.gif" alt="OAICat - An OAI-PMH v2 Repository Framework" width="388" height="120" border="0"></a></td>
+<td width="50%" align="right"><a href="http://www.oclc.org/research/"><img src="banner02.gif" alt="A Project of OCLC Research" width="202" height="120" border="0"></a></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr valign="top">
+<td>
+<h2>JDBC Implementation</h2>
+<p>A JDBC implementation is included with the OAICat package. In theory, it should be possible to customize OAICat to work with any JDBC accessible database by merely changing a few entries in the application's properties file. If the reality isn't so simple, let me know and I can attempt to generalize it still further.</p>
+<p>For Microsoft Windows users, a sample Access database named oaicatdemo.mdb is included in the war file distribution. To test the JDBC implementation against this JDBC source, follow these steps:</p>
+<ol>
+<li>Copy oaicat.war to Tomcat's webapps directory, restart Tomcat, and test the default configuration.</li>
+<li>If it works, start the ODBC Data Source Administrator control panel, click the "System DSN" tab, then "Add...".</li>
+<li>Choose "Microsoft Access Driver (*.mdb).</li>
+<li>Type "oaicatdemo" in the Data Source Name box, and browse to select "oaicatdemo.mdb" located in the webapps/oaicat/ directory.</li>
+<li>Close the ODBC Data Source Administrator control panel.</li>
+<li>Delete webapps/oaicat/WEB-INF/oaicat.properties.</li>
+<li>Rename webapps/oaicat/WEB-INF/jdbc.properties to oaicat.properties.</li>
+<li>Restart Tomcat and test.</li>
+</ol>
+<p>If this works, change the values in webapps/oaicat/WEB-INF/oaicat.properties (formerly jdbc.properties) to suit your needs.</p>
+</td>
+</tr>
+<tr valign="top">
+<td bgcolor="#669933" height="1"></td>
+</tr>
+<tr valign="top">
+<td><a href="http://www.oclc.org/research/software/oai/cat.shtm"><img border="0" src="oaicat_icon.gif" alt="OAICat - An OAI-PMH v2 Repository Framework" width="120" height="60"></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.openarchives.org"><img border="0" src="http://www.openarchives.org/images/OA100.gif"/></a></td>
+</tr>
+<tr valign="top">
+<td><address><a href="mailto:jyoung@oclc.org">Jeff Young</a></address><span class="footer">
+<!-- Created: Wed Oct  2 16:53:15 EDT 2002 -->
+<!-- hhmts start -->
+Last modified: Mon Apr 21 15:38:16 EDT 2003
+<!-- hhmts end -->
+</span></td>
+</tr>
+</table>
+</body>
+</html>
