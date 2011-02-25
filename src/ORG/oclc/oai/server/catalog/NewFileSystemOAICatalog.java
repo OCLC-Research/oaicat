@@ -59,7 +59,7 @@ public class NewFileSystemOAICatalog extends AbstractCatalog {
 
     private SimpleDateFormat dateFormatter = new SimpleDateFormat();
     protected String           homeDir;
-    private HashMap          fileDateMap = new HashMap();
+    protected HashMap          fileDateMap = new HashMap();
     private HashMap setMap = new HashMap();
     private HashMap          resumptionResults=new HashMap();
     private int              maxListSize;
