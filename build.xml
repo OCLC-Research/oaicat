@@ -69,7 +69,7 @@
 -->
 
   <property name="app.name"      value="oaicat"/>
-  <property name="appp.version"   value="1.5.57"/>
+  <property name="appp.version"   value="1.5.58"/>
   <property name="build.home"    value="build"/>
   <property name="catalina.home" value="../../../.."/> <!-- UPDATE THIS! -->
   <property name="dist.home"     value="dist"/>
@@ -150,11 +150,11 @@
 
     <!-- Include all elements that Tomcat exposes to applications -->
     <pathelement location="${catalina.home}/common/classes"/>
-    <fileset dir="${catalina.home}/common/lib">
+    <fileset dir="${catalina.home}/lib">
       <include name="*.jar"/>
     </fileset>
     <pathelement location="${catalina.home}/classes"/>
-    <fileset dir="${catalina.home}/common/lib">
+    <fileset dir="${catalina.home}/lib">
       <include name="*.jar"/>
     </fileset>
 
@@ -215,6 +215,7 @@
     <javac srcdir="src"
           destdir="${build.home}"
            debug="${compile.debug}"
+           includeAntRuntime="false"
      deprecation="${compile.deprecation}"
         optimize="${compile.optimize}">
         <classpath refid="compile.classpath"/>
