@@ -1,5 +1,11 @@
 OAICat version file. This file records major changes to the OAICat software.
 
+2011-03-31 1.5.58
+Bug Fix:
+- Deprecate old JDBC AbstractCatalog implementations in favor of ExtendedJDBCOAICatalog.
+Enhancement:
+- Cleaned up various build warnings.
+
 2009-03-26 1.5.57
 Bug Fix:
 - Fix persistentConnection bug in NewJDBCOAICatalog
