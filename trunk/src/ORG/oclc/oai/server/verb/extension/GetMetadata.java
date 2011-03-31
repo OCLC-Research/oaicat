@@ -17,7 +17,6 @@ import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpUtils;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 
@@ -67,7 +66,7 @@ public class GetMetadata extends ServerVerb {
 	    try {
 		baseURL = request.getRequestURL().toString();
 	    } catch (java.lang.NoSuchMethodError f) {
-		baseURL = HttpUtils.getRequestURL(request).toString();
+		baseURL = request.getRequestURL().toString();
 	    }
 	}
         StringBuffer sb = new StringBuffer();

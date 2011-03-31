@@ -38,8 +38,7 @@ public class NodePassThruCrosswalk extends Crosswalk {
     /**
      * The constructor assigns the schemaLocation associated with this crosswalk. Since
      * the crosswalk is trivial in this case, no properties are utilized.
-     *
-     * @param properties properties that are needed to configure the crosswalk.
+     * @param crosswalkItem 
      */
     public NodePassThruCrosswalk(CrosswalkItem crosswalkItem) {
 	super(crosswalkItem.getMetadataNamespace() + " " + crosswalkItem.getSchema());

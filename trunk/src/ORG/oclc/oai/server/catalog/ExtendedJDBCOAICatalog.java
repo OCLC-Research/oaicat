@@ -1313,7 +1313,7 @@ public class ExtendedJDBCOAICatalog extends AbstractCatalog {
      * get the setSpec XML string. Extend this class and override this method
      * if the setSpec can't be directly taken from the result set as a String
      *
-     * @param rs ResultSet
+     * @param setItem
      * @return an XML String containing the &lt;setSpec&gt; content
      */
     protected String getSetSpec(HashMap setItem) {
@@ -1329,7 +1329,7 @@ public class ExtendedJDBCOAICatalog extends AbstractCatalog {
      * get the setName XML string. Extend this class and override this method
      * if the setName can't be directly taken from the result set as a String
      *
-     * @param rs ResultSet
+     * @param setItem
      * @return an XML String containing the &lt;setName&gt; content
      */
     protected String getSetName(HashMap setItem) {
@@ -1340,7 +1340,7 @@ public class ExtendedJDBCOAICatalog extends AbstractCatalog {
      * get the setDescription XML string. Extend this class and override this method
      * if the setDescription can't be directly taken from the result set as a String
      *
-     * @param rs ResultSet
+     * @param setItem
      * @return an XML String containing the &lt;setDescription&gt; content
      */
     protected String getSetDescription(HashMap setItem) {

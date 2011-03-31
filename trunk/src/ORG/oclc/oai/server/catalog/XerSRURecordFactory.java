@@ -10,7 +10,6 @@
  */
 package ORG.oclc.oai.server.catalog;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Properties;
@@ -23,13 +22,6 @@ import org.apache.xpath.XPathAPI;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXParseException;
-
-import ORG.oclc.oai.server.crosswalk.CrosswalkItem;
-import ORG.oclc.oai.server.crosswalk.NodePassThruCrosswalk;
-import ORG.oclc.oai.server.verb.OAIInternalServerError;
 
 /**
  * NodeRecordFactory converts native XML "items" to "record" Strings.
@@ -256,8 +248,6 @@ public class XerSRURecordFactory extends RecordFactory {
      * above individually.
      * 
      * @param nativeItem the native record
-     * @param schemaURL the schemaURL desired for the response
-     * @param the metadataPrefix from the request
      * @return a String containing the OAI &lt;record&gt; or null if the default method should be
      * used.
      */

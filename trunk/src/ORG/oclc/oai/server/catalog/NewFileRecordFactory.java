@@ -137,8 +137,6 @@ public class NewFileRecordFactory extends RecordFactory {
      * above individually.
      * 
      * @param nativeItem the native record
-     * @param schemaURL the schemaURL desired for the response
-     * @param the metadataPrefix from the request
      * @return a String containing the OAI &lt;record&gt; or null if the default method should be
      * used.
      */

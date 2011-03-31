@@ -16,7 +16,6 @@ import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpUtils;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 
@@ -32,7 +31,10 @@ public class BadVerb extends ServerVerb {
      *
      * @param context the servlet context
      * @param request the servlet request
+     * @param response 
+     * @param serverTransformer 
      * @return a String containing the xml response
+     * @throws TransformerException 
      */
     public static String construct(HashMap context,
                                    HttpServletRequest request, HttpServletResponse response,
@@ -62,7 +64,8 @@ public class BadVerb extends ServerVerb {
 	try {
 	    sb.append(request.getRequestURL().toString());
 	} catch (java.lang.NoSuchMethodError e) {
-	    sb.append(HttpUtils.getRequestURL(request).toString());
+	    sb.append(request.getRequestURL().toString());
+//	    sb.append(HttpUtils.getRequestURL(request).toString());
 	}
 	sb.append("</request>");
 	sb.append("<error code=\"badVerb\">Illegal verb</error>");

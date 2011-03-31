@@ -141,7 +141,7 @@ public abstract class RecordFactory {
      *
      * @param identifier the OAI identifier
      * @param datestamp the datestamp
-     * @param setSpec An interator containing setSpec Strings
+     * @param setSpecs 
      * @param isDeleted a flag indicating the status of the record.
      * @return String[0] = "header" XML string String[1] = oai-identifier.
      * @exception IllegalArgumentException One of the header components for this record is bad.
@@ -189,9 +189,10 @@ public abstract class RecordFactory {
      *
      * @param nativeItem the native record
      * @param schemaURL the schemaURL desired for the response
-     * @param the metadataPrefix from the request
+     * @param metadataPrefix 
      * @return a String containing the OAI record response.
      * @exception IllegalArgumentException One of the header components for this record is bad.
+     * @throws CannotDisseminateFormatException 
      * @exception This nativeItem doesn't support the specified metadataPrefix
      */
     public String create(Object nativeItem, String schemaURL, String metadataPrefix)
@@ -206,9 +207,12 @@ public abstract class RecordFactory {
      *
      * @param nativeItem the native record
      * @param schemaURL the schemaURL desired for the response
-     * @param the metadataPrefix from the request
+     * @param metadataPrefix 
+     * @param setSpecs 
+     * @param abouts 
      * @return a String containing the OAI record response.
      * @exception IllegalArgumentException One of the header components for this record is bad.
+     * @throws CannotDisseminateFormatException 
      * @exception This nativeItem doesn't support the specified metadataPrefix
      */
     public String create(Object nativeItem, String schemaURL, String metadataPrefix,
@@ -245,9 +249,10 @@ public abstract class RecordFactory {
      * record.
      * @param nativeItem the native record
      * @param schemaURL the schemaURL desired for the response
-     * @param the metadataPrefix from the request
+     * @param metadataPrefix 
      * @return a String containing the OAI record response.
      * @exception IllegalArgumentException One of the header components for this record is bad.
+     * @throws CannotDisseminateFormatException 
      * @exception This nativeItem doesn't support the specified metadataPrefix
      */
     public abstract String quickCreate(Object nativeItem, String schemaURL, String metadataPrefix)
@@ -342,9 +347,10 @@ public abstract class RecordFactory {
      *
      * @param nativeItem the native record
      * @param schemaURL the schemaURL desired for the response
-     * @param the metadataPrefix from the request
+     * @param metadataPrefix 
      * @return a String containing the OAI record response.
      * @exception IllegalArgumentException One of the header components for this record is bad.
+     * @throws CannotDisseminateFormatException 
      * @exception This nativeItem doesn't support the specified metadataPrefix
      */
     public String createMetadata(Object nativeItem, String schemaURL, String metadataPrefix)
@@ -359,9 +365,12 @@ public abstract class RecordFactory {
      *
      * @param nativeItem the native record
      * @param schemaURL the schemaURL desired for the response
-     * @param the metadataPrefix from the request
+     * @param metadataPrefix 
+     * @param setSpecs 
+     * @param abouts 
      * @return a String containing the OAI record response.
      * @exception IllegalArgumentException One of the header components for this record is bad.
+     * @throws CannotDisseminateFormatException 
      * @exception This nativeItem doesn't support the specified metadataPrefix
      */
     public String createMetadata(Object nativeItem, String schemaURL, String metadataPrefix,
@@ -391,7 +400,7 @@ public abstract class RecordFactory {
      * record.
      * @param nativeItem the native record
      * @param schemaURL the schemaURL desired for the response
-     * @param the metadataPrefix from the request
+     * @param metadataPrefix 
      * @return a String containing the OAI record response.
      * @exception IllegalArgumentException One of the header components for this record is bad.
      * @exception This nativeItem doesn't support the specified metadataPrefix
