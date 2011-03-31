@@ -45,6 +45,7 @@ import ORG.oclc.oai.util.OAIUtil;
  * to have OAICat work with your JDBC database.
  *
  * @author Jeffrey A. Young, OCLC Online Computer Library Center
+ * @deprecated Use ExtendedJDBCOAICatalog instead
  */
 public class JDBCLimitedOAICatalog extends AbstractCatalog {
     private static final boolean debug = false;
@@ -1208,7 +1209,7 @@ public class JDBCLimitedOAICatalog extends AbstractCatalog {
     /**
      * get an Iterator containing the setSpecs for the nativeItem
      *
-     * @param rs ResultSet containing the nativeItem
+     * @param nativeItem
      * @return an Iterator containing the list of setSpec values for this nativeItem
      */
     private Iterator getSetSpecs(HashMap nativeItem)
@@ -1240,7 +1241,7 @@ public class JDBCLimitedOAICatalog extends AbstractCatalog {
     /**
      * get an Iterator containing the abouts for the nativeItem
      *
-     * @param rs ResultSet containing the nativeItem
+     * @param nativeItem
      * @return an Iterator containing the list of about values for this nativeItem
      */
     private Iterator getAbouts(HashMap nativeItem)
@@ -1307,7 +1308,7 @@ public class JDBCLimitedOAICatalog extends AbstractCatalog {
      * get the setSpec XML string. Extend this class and override this method
      * if the setSpec can't be directly taken from the result set as a String
      *
-     * @param rs ResultSet
+     * @param setItem
      * @return an XML String containing the &lt;setSpec&gt; content
      */
     protected String getSetSpec(HashMap setItem) {
@@ -1323,7 +1324,7 @@ public class JDBCLimitedOAICatalog extends AbstractCatalog {
      * get the setName XML string. Extend this class and override this method
      * if the setName can't be directly taken from the result set as a String
      *
-     * @param rs ResultSet
+     * @param setItem
      * @return an XML String containing the &lt;setName&gt; content
      */
     protected String getSetName(HashMap setItem) {
@@ -1334,7 +1335,7 @@ public class JDBCLimitedOAICatalog extends AbstractCatalog {
      * get the setDescription XML string. Extend this class and override this method
      * if the setDescription can't be directly taken from the result set as a String
      *
-     * @param rs ResultSet
+     * @param setItem
      * @return an XML String containing the &lt;setDescription&gt; content
      */
     protected String getSetDescription(HashMap setItem) {

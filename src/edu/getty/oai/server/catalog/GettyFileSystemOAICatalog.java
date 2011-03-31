@@ -177,7 +177,6 @@ public class GettyFileSystemOAICatalog extends AbstractCatalog {
     }
     /**
      * Override this method if you don't like the default localIdentifiers.
-     * @param homeDirLen the length of the home directory path
      * @param file the File object containing the native record
      * @return localIdentifier
      */
