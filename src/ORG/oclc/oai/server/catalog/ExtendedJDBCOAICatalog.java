@@ -279,6 +279,7 @@ public class ExtendedJDBCOAICatalog extends AbstractCatalog {
              * (which is the responsibility of the RecordFactory implementation).
              */
             if (!rs.next()) {
+                stmt.close();
                 endConnection(con);
                 throw new IdDoesNotExistException(oaiIdentifier);
             } else {
@@ -286,6 +287,7 @@ public class ExtendedJDBCOAICatalog extends AbstractCatalog {
                  * (if any) to determine the supported schemaLocations for this item */
                 HashMap nativeItem = new HashMap();
                 nativeItem.put("coreResult", getColumnValues(rs));
+                stmt.close();
                 endConnection(con);
                 return getRecordFactory().getSchemaLocations(nativeItem);
             }
@@ -575,6 +577,7 @@ public class ExtendedJDBCOAICatalog extends AbstractCatalog {
             }
             
             if (count == 0) {
+                stmt.close();
                 endConnection(con);
                 throw new NoItemsMatchException();
             }
@@ -614,8 +617,9 @@ public class ExtendedJDBCOAICatalog extends AbstractCatalog {
                         0));
                 //          listIdentifiersMap.put("resumptionMap",
                 //                                 getResumptionMap(resumptionTokenSb.toString()));
-                endConnection(con);
             }
+            stmt.close();
+            endConnection(con);
         } catch (SQLException e) {
             if (con != null)
                 endConnection(con);
@@ -732,8 +736,9 @@ public class ExtendedJDBCOAICatalog extends AbstractCatalog {
                         oldCount));
                 //          listIdentifiersMap.put("resumptionMap",
                 //                                 getResumptionMap(resumptionTokenSb.toString()));
-                endConnection(con);
             }
+            stmt.close();
+            endConnection(con);
         } catch (UnsupportedEncodingException e) {
             if (con != null)
                 endConnection(con);
@@ -778,6 +783,7 @@ public class ExtendedJDBCOAICatalog extends AbstractCatalog {
             HashMap nativeItem = new HashMap();
             nativeItem.put("coreResult", getColumnValues(rs));
             extendItem(con, nativeItem);
+            stmt.close();
             endConnection(con);
             return constructRecord(nativeItem, metadataPrefix);
         } catch (SQLException e) {
@@ -880,8 +886,9 @@ public class ExtendedJDBCOAICatalog extends AbstractCatalog {
                         0));
                 //          listRecordsMap.put("resumptionMap",
                 //                                 getResumptionMap(resumptionTokenSbSb.toString()));
-                endConnection(con);
             }
+            stmt.close();
+            endConnection(con);
         } catch (UnsupportedEncodingException e) {
             if (con != null)
                 endConnection(con);
@@ -999,8 +1006,9 @@ public class ExtendedJDBCOAICatalog extends AbstractCatalog {
                         oldCount));
                 //          listRecordsMap.put("resumptionMap",
                 //                                 getResumptionMap(resumptionTokenSb.toString()));
-                endConnection(con);
             }
+            stmt.close();
+            endConnection(con);
         } catch (UnsupportedEncodingException e) {
             if (con != null)
                 endConnection(con);
@@ -1108,8 +1116,9 @@ public class ExtendedJDBCOAICatalog extends AbstractCatalog {
                             0));
                     //          listSetsMap.put("resumptionMap",
                     //                                 getResumptionMap(resumptionTokenSb.toString()));
-                    endConnection(con);
                 }
+                stmt.close();
+                endConnection(con);
             } catch (SQLException e) {
                 if (con != null)
                     endConnection(con);
@@ -1232,6 +1241,7 @@ public class ExtendedJDBCOAICatalog extends AbstractCatalog {
                     HashMap setMap = getColumnValues(rs);
                     setSpecs.add(setMap.get(setSpecItemLabel).toString());
                 }
+                stmt.close();
                 endConnection(con);
             }
             return setSpecs.iterator();
@@ -1264,6 +1274,7 @@ public class ExtendedJDBCOAICatalog extends AbstractCatalog {
                     HashMap aboutMap = getColumnValues(rs);
                     abouts.add(aboutMap.get(aboutValueLabel));
                 }
+                stmt.close();
                 endConnection(con);
             }
             return abouts.iterator();
