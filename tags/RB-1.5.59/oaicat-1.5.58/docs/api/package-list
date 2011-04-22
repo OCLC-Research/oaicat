@@ -1,0 +1,8 @@
+ORG.oclc.oai.server
+ORG.oclc.oai.server.catalog
+ORG.oclc.oai.server.catalog.helpers
+ORG.oclc.oai.server.crosswalk
+ORG.oclc.oai.server.verb
+ORG.oclc.oai.server.verb.extension
+ORG.oclc.oai.util
+edu.getty.oai.server.catalog

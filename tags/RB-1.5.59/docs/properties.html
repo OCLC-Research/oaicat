@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+<title>OAICat - An OAI-PMH v2 Repository Framework</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="oaicat.css" rel="stylesheet" type="text/css">
+</head>
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<table width="100%" border="0" cellspacing="20" cellpadding="0">
+<tr valign="top">
+<td bgcolor="#669933">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr valign="top">
+<td width="50%"><a href="index.html"><img src="banner01.gif" alt="OAICat - An OAI-PMH v2 Repository Framework" width="388" height="120" border="0"></a></td>
+<td width="50%" align="right"><a href="http://www.oclc.org/research/"><img src="banner02.gif" alt="A Project of OCLC Research" width="202" height="120" border="0"></a></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr valign="top">
+<td>
+	  <h2>Description of Entries in oaicat.properties</h2>
+          <ul>
+	    <li><b>OAIHandler.extraXmlns=[xmlns attributes] (Optional)</b>: This string gets inserted into the <oai:OAI-PMH> root element in ListRecords and GetRecord responses. It was added to make large-scale harvesting of DSpace METS records more efficient.</li>
+            <li><b>OAIHandler.serviceUnavailable=[true|false] (Optional)</b>: Forces the server to return a SC_SERVICE_UNAVAILABLE code to inform the user that it is currently being worked on.</li>
+            <li><b>OAIHandler.styleSheet=[path-to-xsl-stylesheet] (Optional)</b>: If present, a reference to this XSLT stylesheet will be included in the OAI responses.</li>
+            <li><b>OAIHandler.renderForOldBrowsers=[true|false] (Optional)</b>: If present and true, the XSLT stylesheet will be applied to the OAI response on the the server before sending back the response, if the client is an old browser. This is a good idea if you've defined OAIHandler.styleSheet because some old browsers don't do a very good job of rendering XSLT on the client side.</li>
+            <li><b>OAIHandler.forceRender=[true|false] (Optional)</b>: If present and true, the XSLT stylesheet will be applied to the OAI response on the the server before sending back the response. This is useful if you want to use OAICat as a web application framework, but want to disable OAI harvesting because the data is proprietary (e.g. <a href="http://alcme.oclc.org/gsafd/">The GSAFD Thesaurus</a>).</li>
+            <li><b>OAIHandler.baseURL=[OAI baseURL] (Optional)</b>: Force OAI responses to include the specified baseURL instead of getting it from the HttpServletRequest. This may be necessary if your firewall/router/port-mapper is messing with the request in some way.</li>
+          </ul>
+          <ul>
+            <li><b>AbstractCatalog.oaiCatalogClassName=[package.classname] (Required)</b>: The fully qualified Java class name that implements ORG.oclc.oai.server.catalog.AbstractCatalog.</li>
+            <li><b>AbstractCatalog.recordFactoryClassName=[package.classname] (Required)</b>: The fully qualified Java class name that implements ORG.oclc.oai.server.catalog.RecordFactory.</li>
+            <li><b>AbstractCatalog.secondsToLive=[# of seconds] (Optional)</b>: The number of seconds a resumptionToken is retained for reuse. The default is -1, which means that resumptionTokens are stateless and can be resent anytime.</li>
+            <li><b>AbstractCatalog.harvestable=[true|false] (Optional)</b>: If present and false, the ListRecords and ListIdentifiers verbs will send back an error condition. This might be useful if you want to provide access to the other verbs but want to discourage general harvesting.</li>
+            <li><b>AbstractCatalog.granularity=[YYYY-MM-DD|YYYY-MM-DDThh:mm:ssZ] (Required)</b>: The supported level of datetime granularity for from/until parameters.</li>
+          </ul>
+          <ul>
+            <li><b>Identify.repositoryName=[text] (Required)</b>: Text to use as the Identify verb's repositoryName value.</li>
+            <li><b>Identify.adminEmail[mailto:abc@xyz.org] (Required)</b>: Text to use as the Identify verb's adminEmail value.</li>
+            <li><b>Identify.earliestDatestamp=[datetime stamp of earliest] (Required)</b>: Text to use as the Identify verb's earliestDatestamp value.</li>
+            <li><b>Identify.deletedRecord=[no|transient|persistent] (Required)</b>: Text to use as the Identify verb's deletedRecord value.</li>
+            <li><b>Identify.description.[0-9]*=[xml fragment] (Optional; Repeatable)</b>: XML fragments (&lt;description&gt;) to include in the Identify verb's response.</li>
+          </ul>
+          <ul>
+            <li><b>Crosswalks.[metadataPrefix]=[package.classname] (Required; Repeatable)</b>: Java class(es) that implement the ORG.oclc.oai.server.crosswalk.Crosswalk class.</li>
+          </ul>
+          <ul>
+            <li><b>ExtensionVerbs.[verb name]=[package.classname] (Optional; Repeatable)</b>: Java class(es) that extend the ORG.oclc.oai.server.verb.ServerVerb class. This allow you to easily create new verbs to perform application functions beyond the set of OAI verbs. These verbs can be accessed by adding &quot;/extension&quot; to the baseURL.</li>
+          </ul>
+          <ul>
+            <li>Other properties that support various combinations of classes mentioned above.</li>
+          </ul>
+</td>
+</tr>
+<tr valign="top">
+<td bgcolor="#669933" height="1"></td>
+</tr>
+<tr valign="top">
+<td><a href="http://www.oclc.org/research/software/oai/cat.shtm"><img border="0" src="oaicat_icon.gif" alt="OAICat - An OAI-PMH v2 Repository Framework" width="120" height="60"></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.openarchives.org"><img border="0" src="http://www.openarchives.org/images/OA100.gif"/></a></td>
+</tr>
+<tr valign="top">
+<td><address><a href="mailto:jyoung@oclc.org">Jeff Young</a></address><span class="footer">
+<!-- Created: Wed Oct  2 16:53:15 EDT 2002 -->
+<!-- hhmts start -->
+Last modified: Fri Jul 29 10:03:16 Eastern Daylight Time 2005
+<!-- hhmts end -->
+</span></td>
+</tr>
+</table>
+</body>
+</html>
