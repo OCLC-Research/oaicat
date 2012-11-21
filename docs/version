@@ -1,5 +1,9 @@
 OAICat version file. This file records major changes to the OAICat software.
 
+2011-04-22 1.5.60
+Bug Fix:
+- Add missing closure to 'if' condition when handling "global" attributes.
+
 2011-04-22 1.5.59
 Bug Fix:
 - Close java.sql.Statements after use in ExtendedJDBCOAICatalog.
