@@ -1,5 +1,9 @@
 OAICat version file. This file records major changes to the OAICat software.
 
+2013-04-18 1.5.61
+Enhancement:
+- change mechanism for locating the oaicat.properties configuration file.
+
 2011-04-22 1.5.60
 Bug Fix:
 - Add missing closure to 'if' condition when handling "global" attributes.
