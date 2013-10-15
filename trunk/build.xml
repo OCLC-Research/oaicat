@@ -69,7 +69,7 @@
 -->
 
   <property name="app.name"      value="oaicat"/>
-  <property name="appp.version"   value="1.5.60"/>
+  <property name="appp.version"   value="1.5.61"/>
   <property name="build.home"    value="build"/>
   <property name="catalina.home" value="../../../.."/> <!-- UPDATE THIS! -->
   <property name="dist.home"     value="dist"/>
@@ -255,7 +255,7 @@
         <attribute name="Specification-Version" value="2.0"/>
         <attribute name="Specification-Vendor" value="Open Archives Initiative"/>
         <attribute name="Implementation-Title" value="OAICat"/>
-        <attribute name="Implementation-Version" value="${appp.version} ${TODAY}"/> 
+        <attribute name="Implementation-Version" value="${appp.version} ${TODAY}"/>
         <attribute name="Implementation-Vendor" value="OCLC, Online Computer Library Center"/>
         <attribute name="Implementation-URL" value="http://www.oclc.org/research/software/oai/cat.shtm"/>
       </manifest>
