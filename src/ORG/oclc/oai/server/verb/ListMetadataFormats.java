@@ -92,7 +92,7 @@ public class ListMetadataFormats extends ServerVerb {
 //      sb.append("</requestURL>");
         sb.append(getRequestElement(request, validParamNames, baseURL));
         if (hasBadArguments(request, requiredParamNames.iterator(),
-                validParamNames)) {
+                validParamNames, abstractCatalog)) {
             sb.append(new BadArgumentException().getMessage());
         } else {
             Crosswalks crosswalks = abstractCatalog.getCrosswalks();

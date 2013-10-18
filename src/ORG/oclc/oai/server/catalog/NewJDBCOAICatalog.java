@@ -50,22 +50,22 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
      * The StatementResultSet inner class is used because Statement objects
      * and ResultSet objects are tightly coupled and need to persist across
      * multiple requests.
-     * 
+     *
      * @author Jeffrey A. Young
      */
     private class StatementResultSet {
         private Statement stmt = null;
         private ResultSet rs = null;
-        
+
         public StatementResultSet(String query) throws SQLException {
             Connection con = getConnection();
             stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             rs = stmt.executeQuery(query);
         }
-        
+
         public Statement getStatement() { return stmt; }
         public ResultSet getResultSet() { return rs; }
-        
+
         public void close() throws SQLException {
             if (rs != null) {
                 rs.close();
@@ -98,7 +98,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
         public boolean next() throws SQLException {
             return rs.next();
         }
-        
+
         public void last() throws SQLException {
             rs.last();
         }
@@ -115,47 +115,47 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
             return rs.absolute(oldCount);
         }
     }
-    
+
     /**
      * The JDBC Connection
      */
     private Connection persistentConnection = null;
-    
+
     private static final boolean debug = false;
-    
+
     /**
      * SQL identifier query (loaded from properties)
      * \\i -> localIdentifier, \\o -> oaiIdentifier
      */
     private String identifierQuery = null;
-    
+
     /**
      * SQL range query (loaded from properties)
      * \\f -> from, \\u -> until
      */
     private String rangeQuery = null;
-    
+
     /**
      * SQL range query (loaded from properties)
      * \\f -> from, \\u -> until, \\s -> set
      */
     private String rangeSetQuery = null;
-    
+
     /**
      * SQL query to get a list of available sets
      */
     private String setQuery = null;
-    
+
     /**
      * SQL query to get a list of available sets that apply to a particular identifier
      */
     private String setSpecQuery = null;
-    
+
     /**
      * SQL query to get a list of available abouts that apply to a particular identifier
      */
     private String aboutQuery = null;
-    
+
     /**
      * SQL column labels containing the values of particular interest
      */
@@ -164,26 +164,26 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
     private String setSpecListLabel = null;
     private String setNameLabel = null;
     private String setDescriptionLabel = null;
-    
+
     /**
      * maximum number of entries to return for ListRecords and ListIdentifiers
      * (loaded from properties)
      */
     private int maxListSize;
-    
+
     /**
      * The format required for dates in SQL queries
      * "UTC" = YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSZ
      * other = YYYY/MM/DD
      */
     private String dateFormat = null;
-    
+
     /**
      * Set Strings to be loaded from the properties file
      * (if they are to be loaded from properties rather than queried from the database)
      */
     ArrayList sets = new ArrayList();
-    
+
     /**
      * pending resumption tokens
      */
@@ -191,7 +191,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
     private String jdbcURL = null;
     private String jdbcLogin = null;
     private String jdbcPasswd = null;
-    
+
     /**
      * Construct a JDBCOAICatalog object
      *
@@ -205,7 +205,11 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
         } else {
             this.maxListSize = Integer.parseInt(maxListSize);
         }
-        
+
+        String paramRegex = properties.getProperty("AbstractCatalog.paramRegex");
+        if (paramRegex != null) {
+            setParamRegex(paramRegex);
+        }
         String jdbcDriverName = properties.getProperty("JDBCOAICatalog.jdbcDriverName");
         if (jdbcDriverName == null) {
             throw new IllegalArgumentException("JDBCOAICatalog.jdbcDriverName is missing from the properties file");
@@ -214,32 +218,32 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
         if (jdbcURL == null) {
             throw new IllegalArgumentException("JDBCOAICatalog.jdbcURL is missing from the properties file");
         }
-        
+
         jdbcLogin = properties.getProperty("JDBCOAICatalog.jdbcLogin");
         if (jdbcLogin == null) {
             throw new IllegalArgumentException("JDBCOAICatalog.jdbcLogin is missing from the properties file");
         }
-        
+
         jdbcPasswd = properties.getProperty("JDBCOAICatalog.jdbcPasswd");
         if (jdbcPasswd == null) {
             throw new IllegalArgumentException("JDBCOAICatalog.jdbcPasswd is missing from the properties file");
         }
-        
+
         rangeQuery = properties.getProperty("JDBCOAICatalog.rangeQuery");
         if (rangeQuery == null) {
             throw new IllegalArgumentException("JDBCOAICatalog.rangeQuery is missing from the properties file");
         }
-        
+
         rangeSetQuery = properties.getProperty("JDBCOAICatalog.rangeSetQuery");
         if (rangeSetQuery == null) {
             throw new IllegalArgumentException("JDBCOAICatalog.rangeSetQuery is missing from the properties file");
         }
-        
+
         identifierQuery = properties.getProperty("JDBCOAICatalog.identifierQuery");
         if (identifierQuery == null) {
             throw new IllegalArgumentException("JDBCOAICatalog.identifierQuery is missing from the properties file");
         }
-        
+
         aboutQuery = properties.getProperty("JDBCOAICatalog.aboutQuery");
         if (aboutQuery != null) {
             aboutValueLabel = properties.getProperty("JDBCOAICatalog.aboutValueLabel");
@@ -247,7 +251,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
                 throw new IllegalArgumentException("JDBCOAICatalog.aboutValueLabel is missing from the properties file");
             }
         }
-        
+
         setSpecQuery = properties.getProperty("JDBCOAICatalog.setSpecQuery");
         setSpecItemLabel = properties.getProperty("JDBCOAICatalog.setSpecItemLabel");
         if (setSpecItemLabel == null) {
@@ -261,9 +265,9 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
         if (setNameLabel == null) {
             throw new IllegalArgumentException("JDBCOAICatalog.setNameLabel is missing from the properties file");
         }
-        
+
         setDescriptionLabel = properties.getProperty("JDBCOAICatalog.setDescriptionLabel");
-        
+
         // See if a setQuery exists
         setQuery = properties.getProperty("JDBCOAICatalog.setQuery");
         if (setQuery == null) {
@@ -277,7 +281,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
                 }
             }
         }
-        
+
         try {
             Class.forName(jdbcDriverName);
         } catch (ClassNotFoundException e) {
@@ -285,7 +289,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
                     + jdbcDriverName);
         }
     }
-    
+
     /**
      * Retrieve a list of schemaLocation values associated with the specified
      * oaiIdentifier.
@@ -331,7 +335,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
             }
         }
     }
-    
+
     /**
      * insert actual from, until, and set parameters into the rangeQuery String
      *
@@ -348,12 +352,12 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
             tokenizer = new StringTokenizer(rangeQuery, "\\");
         else
             tokenizer = new StringTokenizer(rangeSetQuery, "\\");
-        
+
         if (tokenizer.hasMoreTokens())
             sb.append(tokenizer.nextToken());
         else
             throw new OAIInternalServerError("Invalid query");
-        
+
         while (tokenizer.hasMoreTokens()) {
             String token = tokenizer.nextToken();
             switch (token.charAt(0)) {
@@ -375,25 +379,25 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
         if (debug) System.out.println(sb.toString());
         return sb.toString();
     }
-    
+
     /**
      * Extend this class and override this method if necessary.
      */
     protected String formatFromDate(String date) {
         return formatDate(date);
     }
-    
+
     /**
      * Extend this class and override this method if necessary.
      */
     protected String formatUntilDate(String date) {
         return formatDate(date);
     }
-    
+
     /**
      * Change the String from UTC to SQL format
      * If this method doesn't suit your needs, extend this class and override
-     * the method rather than change this code directly. 
+     * the method rather than change this code directly.
      */
     protected String formatDate(String date) {
         if ("UTC".equals(dateFormat)) {
@@ -409,7 +413,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
             return sb.toString();
         }
     }
-    
+
     /**
      * insert actual from, until, and set parameters into the identifierQuery String
      *
@@ -426,7 +430,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
             sb.append(tokenizer.nextToken());
         else
             throw new OAIInternalServerError("Invalid identifierQuery");
-        
+
         while (tokenizer.hasMoreTokens()) {
             String token = tokenizer.nextToken();
             switch (token.charAt(0)) {
@@ -445,7 +449,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
         if (debug) System.out.println(sb.toString());
         return sb.toString();
     }
-    
+
     /**
      * insert actual from, until, and set parameters into the identifierQuery String
      *
@@ -462,7 +466,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
             sb.append(tokenizer.nextToken());
         else
             throw new OAIInternalServerError("Invalid identifierQuery");
-        
+
         while (tokenizer.hasMoreTokens()) {
             String token = tokenizer.nextToken();
             switch (token.charAt(0)) {
@@ -481,7 +485,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
         if (debug) System.out.println(sb.toString());
         return sb.toString();
     }
-    
+
     /**
      * insert actual from, until, and set parameters into the identifierQuery String
      *
@@ -498,7 +502,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
             sb.append(tokenizer.nextToken());
         else
             throw new OAIInternalServerError("Invalid identifierQuery");
-        
+
         while (tokenizer.hasMoreTokens()) {
             String token = tokenizer.nextToken();
             switch (token.charAt(0)) {
@@ -517,7 +521,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
         if (debug) System.out.println(sb.toString());
         return sb.toString();
     }
-    
+
     /**
      * Retrieve a list of identifiers that satisfy the specified criteria
      *
@@ -556,7 +560,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
             }
             stmtRs.beforeFirst();
             int count;
-            
+
             /* load the headers and identifiers ArrayLists. */
             for (count=0; count < maxListSize && stmtRs.next(); ++count) {
                 HashMap nativeItem = stmtRs.getColumnValues();
@@ -565,12 +569,12 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
                 headers.add(header[0]);
                 identifiers.add(header[1]);
             }
-            
+
             /* decide if you're done */
             if (count < numRows) {
                 String resumptionId = getResumptionId();
                 resumptionResults.put(resumptionId, stmtRs);
-                
+
                 /*****************************************************************
                  * Construct the resumptionToken String however you see fit.
                  *****************************************************************/
@@ -582,7 +586,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
                 resumptionTokenSb.append(Integer.toString(numRows));
                 resumptionTokenSb.append("!");
                 resumptionTokenSb.append(metadataPrefix);
-                
+
                 /*****************************************************************
                  * Use the following line if you wish to include the optional
                  * resumptionToken attributes in the response. Otherwise, use the
@@ -606,12 +610,12 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
             e.printStackTrace();
             throw new OAIInternalServerError(e.getMessage());
         }
-        
+
         listIdentifiersMap.put("headers", headers.iterator());
         listIdentifiersMap.put("identifiers", identifiers.iterator());
         return listIdentifiersMap;
     }
-    
+
     /**
      * Retrieve the next set of identifiers associated with the resumptionToken
      *
@@ -629,7 +633,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
         Map listIdentifiersMap = new HashMap();
         ArrayList headers = new ArrayList();
         ArrayList identifiers = new ArrayList();
-        
+
         /**********************************************************************
          * parse your resumptionToken and look it up in the resumptionResults,
          * if necessary
@@ -648,7 +652,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
         } catch (NoSuchElementException e) {
             throw new BadResumptionTokenException();
         }
-        
+
         try {
             /* Get some more records from your database */
             stmtRs = (StatementResultSet)resumptionResults.get(resumptionId);
@@ -656,12 +660,12 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
                 throw new BadResumptionTokenException();
             }
             int count;
-            
+
             if (stmtRs.getRow() != oldCount) {
 //              System.out.println("JDBCOAICatalog.listIdentifiers: reuse of old resumptionToken?");
                 stmtRs.absolute(oldCount);
             }
-            
+
             /* load the headers and identifiers ArrayLists. */
             for (count = 0; count < maxListSize && stmtRs.next(); ++count) {
                 HashMap nativeItem = stmtRs.getColumnValues();
@@ -671,7 +675,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
                 headers.add(header[0]);
                 identifiers.add(header[1]);
             }
-            
+
             /* decide if you're done. */
             if (oldCount+count < numRows) {
                 /*****************************************************************
@@ -685,7 +689,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
                 resumptionTokenSb.append(Integer.toString(numRows));
                 resumptionTokenSb.append("!");
                 resumptionTokenSb.append(metadataPrefix);
-                
+
                 /*****************************************************************
                  * Use the following line if you wish to include the optional
                  * resumptionToken attributes in the response. Otherwise, use the
@@ -709,12 +713,12 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
             e.printStackTrace();
             throw new OAIInternalServerError(e.getMessage());
         }
-        
+
         listIdentifiersMap.put("headers", headers.iterator());
         listIdentifiersMap.put("identifiers", identifiers.iterator());
         return listIdentifiersMap;
     }
-    
+
     /**
      * Retrieve the specified metadata for the specified oaiIdentifier
      *
@@ -750,7 +754,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
             }
         }
     }
-    
+
     /**
      * Retrieve a list of records that satisfy the specified criteria. Note, though,
      * that unlike the other OAI verb type methods implemented here, both of the
@@ -778,7 +782,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
         Map listRecordsMap = new HashMap();
         ArrayList records = new ArrayList();
         StatementResultSet stmtRs = null;
-        
+
         try {
             stmtRs = new StatementResultSet(populateRangeQuery(from, until, set));
             stmtRs.last();
@@ -788,21 +792,21 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
             }
             stmtRs.beforeFirst();
             int count;
-            
+
 //          if (debug) System.out.println("JDBCOAICatalog.listRecords: numRows=" + numRows);
-            
+
             /* load the records ArrayList */
             for (count=0; count < maxListSize && stmtRs.next(); ++count) {
                 HashMap nativeItem = stmtRs.getColumnValues();
                 String record = constructRecord(nativeItem, metadataPrefix);
                 records.add(record);
             }
-            
+
             /* decide if you're done */
             if (count < numRows) {
                 String resumptionId = getResumptionId();
                 resumptionResults.put(resumptionId, stmtRs);
-                
+
                 /*****************************************************************
                  * Construct the resumptionToken String however you see fit.
                  *****************************************************************/
@@ -814,7 +818,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
                 resumptionTokenSb.append(Integer.toString(numRows));
                 resumptionTokenSb.append("!");
                 resumptionTokenSb.append(metadataPrefix);
-                
+
                 /*****************************************************************
                  * Use the following line if you wish to include the optional
                  * resumptionToken attributes in the response. Otherwise, use the
@@ -840,11 +844,11 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
             e.printStackTrace();
             throw new OAIInternalServerError(e.getMessage());
         }
-        
+
         listRecordsMap.put("records", records.iterator());
         return listRecordsMap;
     }
-    
+
     /**
      * Retrieve the next set of records associated with the resumptionToken
      *
@@ -861,7 +865,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
         Map listRecordsMap = new HashMap();
         ArrayList records = new ArrayList();
         purge(); // clean out old resumptionTokens
-        
+
         /**********************************************************************
          * parse your resumptionToken and look it up in the resumptionResults,
          * if necessary
@@ -880,21 +884,21 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
         } catch (NoSuchElementException e) {
             throw new BadResumptionTokenException();
         }
-        
+
         try {
             /* Get some more records from your database */
             stmtRs = (StatementResultSet) resumptionResults.get(resumptionId);
             if (stmtRs == null) {
                 throw new BadResumptionTokenException();
             }
-            
+
             if (stmtRs.getRow() != oldCount) {
 //              System.out.println("JDBCOAICatalog.listIdentifiers: reuse of old resumptionToken?");
                 stmtRs.absolute(oldCount);
             }
-            
+
             int count;
-            
+
             /* load the headers and identifiers ArrayLists. */
             for (count = 0; count < maxListSize && stmtRs.next(); ++count) {
                 try {
@@ -906,7 +910,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
                     throw new BadResumptionTokenException();
                 }
             }
-            
+
             /* decide if you're done */
             if (oldCount+count < numRows) {
                 /*****************************************************************
@@ -920,7 +924,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
                 resumptionTokenSb.append(Integer.toString(numRows));
                 resumptionTokenSb.append("!");
                 resumptionTokenSb.append(metadataPrefix);
-                
+
                 /*****************************************************************
                  * Use the following line if you wish to include the optional
                  * resumptionToken attributes in the response. Otherwise, use the
@@ -946,11 +950,11 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
             e.printStackTrace();
             throw new OAIInternalServerError(e.getMessage());
         }
-        
+
         listRecordsMap.put("records", records.iterator());
         return listRecordsMap;
     }
-    
+
     /**
      * Utility method to construct a Record object for a specified
      * metadataFormat from a native record
@@ -966,14 +970,14 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
         String schemaURL = null;
         Iterator setSpecs = getSetSpecs(nativeItem);
         Iterator abouts = getAbouts(nativeItem);
-        
+
         if (metadataPrefix != null) {
             if ((schemaURL = getCrosswalks().getSchemaURL(metadataPrefix)) == null)
                 throw new CannotDisseminateFormatException(metadataPrefix);
         }
         return getRecordFactory().create(nativeItem, schemaURL, metadataPrefix, setSpecs, abouts);
     }
-    
+
     /**
      * Retrieve a list of sets that satisfy the specified criteria
      *
@@ -994,19 +998,19 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
             purge(); // clean out old resumptionTokens
             Map listSetsMap = new HashMap();
             ArrayList sets = new ArrayList();
-            
+
             try {
                 if (debug) System.out.println(setQuery);
-                
+
                 /* Get some records from your database */
                 stmtRs = new StatementResultSet(setQuery);
                 stmtRs.last();
                 int numRows = stmtRs.getRow();
                 stmtRs.beforeFirst();
                 int count;
-                
+
 //              if (debug) System.out.println("JDBCOAICatalog.listSets: numRows=" + numRows);
-                
+
                 /* load the sets ArrayLists. */
                 for (count=0; count < maxListSize && stmtRs.next(); ++count) {
                     /* Use the RecordFactory to extract header/set pairs for each item */
@@ -1014,7 +1018,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
                     sets.add(getSetXML(nativeItem));
                     if (debug) System.out.println("JDBCOAICatalog.listSets: adding an entry");
                 }
-                
+
                 /* decide if you're done */
                 if (count < numRows) {
                     String resumptionId = getResumptionId();
@@ -1023,7 +1027,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
                      * means the token can't be reused.
                      *****************************************************************/
                     resumptionResults.put(resumptionId, stmtRs);
-                    
+
                     /*****************************************************************
                      * Construct the resumptionToken String however you see fit.
                      *****************************************************************/
@@ -1033,7 +1037,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
                     resumptionTokenSb.append(Integer.toString(count));
                     resumptionTokenSb.append("!");
                     resumptionTokenSb.append(Integer.toString(numRows));
-                    
+
                     /*****************************************************************
                      * Use the following line if you wish to include the optional
                      * resumptionToken attributes in the response. Otherwise, use the
@@ -1057,12 +1061,12 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
                 e.printStackTrace();
                 throw new OAIInternalServerError(e.getMessage());
             }
-            
+
             listSetsMap.put("sets", sets.iterator());
             return listSetsMap;
         }
     }
-    
+
     /**
      * Retrieve the next set of sets associated with the resumptionToken
      *
@@ -1077,14 +1081,14 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
     public Map listSets(String resumptionToken)
     throws OAIInternalServerError, BadResumptionTokenException {
         StatementResultSet stmtRs = null;
-        
+
         if (setQuery == null) {
             throw new BadResumptionTokenException();
         } else {
             purge(); // clean out old resumptionTokens
             Map listSetsMap = new HashMap();
             ArrayList sets = new ArrayList();
-            
+
             /**********************************************************************
              * parse your resumptionToken and look it up in the resumptionResults,
              * if necessary
@@ -1100,28 +1104,28 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
             } catch (NoSuchElementException e) {
                 throw new BadResumptionTokenException();
             }
-            
+
             try {
                 /* Get some more records from your database */
                 stmtRs = (StatementResultSet)resumptionResults.get(resumptionId);
                 if (stmtRs == null) {
                     throw new BadResumptionTokenException();
                 }
-                
+
                 if (stmtRs.getRow() != oldCount) {
 //                  System.out.println("JDBCOAICatalog.listIdentifiers: reuse of old resumptionToken?");
                     stmtRs.absolute(oldCount);
                 }
-                
+
                 int count;
-                
+
                 /* load the sets ArrayLists. */
                 for (count = 0; count < maxListSize && stmtRs.next(); ++count) {
                     HashMap nativeItem = stmtRs.getColumnValues();
                     /* Use the RecordFactory to extract set for each item */
                     sets.add(getSetXML(nativeItem));
                 }
-                
+
                 /* decide if you're done. */
                 if (oldCount+count < numRows) {
                     /*****************************************************************
@@ -1133,7 +1137,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
                     resumptionTokenSb.append(Integer.toString(oldCount + count));
                     resumptionTokenSb.append("!");
                     resumptionTokenSb.append(Integer.toString(numRows));
-                    
+
                     /*****************************************************************
                      * Use the following line if you wish to include the optional
                      * resumptionToken attributes in the response. Otherwise, use the
@@ -1157,12 +1161,12 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
                 e.printStackTrace();
                 throw new OAIInternalServerError(e.getMessage());
             }
-            
+
             listSetsMap.put("sets", sets.iterator());
             return listSetsMap;
         }
     }
-    
+
     /**
      * get an Iterator containing the setSpecs for the nativeItem
      *
@@ -1196,7 +1200,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
             }
         }
     }
-    
+
     /**
      * get an Iterator containing the abouts for the nativeItem
      *
@@ -1230,7 +1234,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
             }
         }
     }
-    
+
     /**
      * Extract &lt;set&gt; XML string from setItem object
      *
@@ -1242,7 +1246,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
         String setSpec = getSetSpec(setItem);
         String setName = getSetName(setItem);
         String setDescription = getSetDescription(setItem);
-        
+
         StringBuffer sb = new StringBuffer();
         sb.append("<set>");
         sb.append("<setSpec>");
@@ -1259,7 +1263,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
         sb.append("</set>");
         return sb.toString();
     }
-    
+
     /**
      * get the setSpec XML string. Extend this class and override this method
      * if the setSpec can't be directly taken from the result set as a String
@@ -1274,7 +1278,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
             return "UnsupportedEncodingException";
         }
     }
-    
+
     /**
      * get the setName XML string. Extend this class and override this method
      * if the setName can't be directly taken from the result set as a String
@@ -1285,7 +1289,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
     protected String getSetName(HashMap setItem) {
         return (String)setItem.get(setNameLabel);
     }
-    
+
     /**
      * get the setDescription XML string. Extend this class and override this method
      * if the setDescription can't be directly taken from the result set as a String
@@ -1298,12 +1302,12 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
             return null;
         return (String)setItem.get(setDescriptionLabel);
     }
-    
+
     private Connection getNewConnection() throws SQLException {
         // open the connection
         return DriverManager.getConnection(jdbcURL, jdbcLogin, jdbcPasswd);
     }
-    
+
     private Connection getConnection() throws SQLException {
         if (persistentConnection != null) {
             if (persistentConnection.isClosed()) {
@@ -1321,7 +1325,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
      */
     public void close() {
     }
-    
+
     /**
      * Purge tokens that are older than the configured time-to-live.
      */
@@ -1342,7 +1346,7 @@ public class NewJDBCOAICatalog extends AbstractCatalog {
             resumptionResults.remove(key);
         }
     }
-    
+
     /**
      * Use the current date as the basis for the resumptiontoken
      *

@@ -56,7 +56,7 @@ public class ListRecords extends ServerVerb {
 	requiredParamNames2.add("verb");
 	requiredParamNames2.add("resumptionToken");
     }
-    
+
     /**
      * Server-side method to construct an xml response to a ListRecords verb.
      */
@@ -65,7 +65,7 @@ public class ListRecords extends ServerVerb {
                                    Transformer serverTransformer)
         throws OAIInternalServerError, TransformerException {
         if (debug) System.out.println("ListRecords.construct: entered");
-	
+
         Properties properties = (Properties)context.get("OAIHandler.properties");
         AbstractCatalog abstractCatalog = (AbstractCatalog)context.get("OAIHandler.catalog");
 	boolean xmlEncodeSetSpec = "true".equalsIgnoreCase(properties.getProperty("OAIHandler.xmlEncodeSetSpec"));
@@ -81,10 +81,10 @@ public class ListRecords extends ServerVerb {
         StringBuffer sb = new StringBuffer();
         String oldResumptionToken = request.getParameter("resumptionToken");
 	String metadataPrefix = request.getParameter("metadataPrefix");
-	
+
 	if (metadataPrefix != null && metadataPrefix.length() == 0)
 	    metadataPrefix = null;
-	
+
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
 	String styleSheet = properties.getProperty("OAIHandler.styleSheet");
 	if (styleSheet != null) {
@@ -105,7 +105,7 @@ public class ListRecords extends ServerVerb {
 //         sb.append("<requestURL>");
 //         sb.append(getRequestURL(request));
 //         sb.append("</requestURL>");
-	
+
 	if (!abstractCatalog.isHarvestable()) {
 	    sb.append("<request verb=\"ListRecords\">");
 	    sb.append(baseURL);
@@ -123,9 +123,9 @@ public class ListRecords extends ServerVerb {
 // 		System.out.print(" of " + totalMemoryK / 1024.0 + "M ");
 // 		System.out.println("(" + (100 * freeMemoryK) / totalMemoryK + "%)");
 // 	    }
-	
+
 	    Map listRecordsMap = null;
-	    
+
 	    ArrayList validParamNames = null;
 	    ArrayList requiredParamNames = null;
 	    if (oldResumptionToken == null) {
@@ -189,7 +189,7 @@ public class ListRecords extends ServerVerb {
 	    } else {
 		validParamNames = validParamNames2;
 		requiredParamNames = requiredParamNames2;
-		if (hasBadArguments(request, requiredParamNames.iterator(), validParamNames)) {
+		if (hasBadArguments(request, requiredParamNames.iterator(), validParamNames, abstractCatalog)) {
 		    sb.append(getRequestElement(request, validParamNames, baseURL, xmlEncodeSetSpec));
 		    sb.append(new BadArgumentException().getMessage());
 		} else {
@@ -204,7 +204,7 @@ public class ListRecords extends ServerVerb {
 	    if (listRecordsMap != null) {
 		sb.append(getRequestElement(request, validParamNames, baseURL, xmlEncodeSetSpec));
 		if (hasBadArguments(request, requiredParamNames.iterator(),
-				    validParamNames)) {
+				    validParamNames, abstractCatalog)) {
 		    sb.append(new BadArgumentException().getMessage());
 		} else {
 		    sb.append("<ListRecords>\n");

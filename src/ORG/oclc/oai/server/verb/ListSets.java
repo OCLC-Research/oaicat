@@ -48,7 +48,7 @@ public class ListSets extends ServerVerb {
      * @exception OAIInternalServerError
      */
     public static String construct(HashMap context, HttpServletRequest request,
-                                   HttpServletResponse response, Transformer serverTransformer) 
+                                   HttpServletResponse response, Transformer serverTransformer)
 	throws OAIInternalServerError, TransformerException {
         Properties properties =
 	    (Properties)context.get("OAIHandler.properties");
@@ -84,7 +84,7 @@ public class ListSets extends ServerVerb {
 	sb.append(getRequestElement(request, validParamNames, baseURL));
 	Map listSetsMap = null;
 	if (hasBadArguments(request, requiredParamNames.iterator(),
-			    validParamNames)) {
+			    validParamNames, abstractCatalog)) {
 	    sb.append(new BadArgumentException().getMessage());
 	} else {
 	    try {

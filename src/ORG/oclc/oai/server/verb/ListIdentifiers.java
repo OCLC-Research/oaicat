@@ -82,7 +82,7 @@ public class ListIdentifiers extends ServerVerb {
 
 	if (metadataPrefix != null && metadataPrefix.length() == 0)
 	    metadataPrefix = null;
-	
+
 	sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>");
 	String styleSheet = properties.getProperty("OAIHandler.styleSheet");
 	if (styleSheet != null) {
@@ -100,7 +100,7 @@ public class ListIdentifiers extends ServerVerb {
 // 	sb.append("<requestURL>");
 // 	sb.append(getRequestURL(request));
 // 	sb.append("</requestURL>");
-            
+
 	if (!abstractCatalog.isHarvestable()) {
 	    sb.append("<request verb=\"ListIdentifiers\">");
 	    sb.append(baseURL);
@@ -144,7 +144,7 @@ public class ListIdentifiers extends ServerVerb {
 		    if (metadataPrefix == null) {
 			throw new BadArgumentException();
 		    }
-		    
+
 		    if (!crosswalks.containsValue(metadataPrefix)) {
 			throw new CannotDisseminateFormatException(metadataPrefix);
 		    } else {
@@ -173,7 +173,7 @@ public class ListIdentifiers extends ServerVerb {
 	    } else {
 		validParamNames = validParamNames2;
 		requiredParamNames = requiredParamNames2;
-		if (hasBadArguments(request, requiredParamNames.iterator(), validParamNames)) {
+		if (hasBadArguments(request, requiredParamNames.iterator(), validParamNames, abstractCatalog)) {
 		    sb.append(getRequestElement(request, validParamNames, baseURL, xmlEncodeSetSpec));
 		    sb.append(new BadArgumentException().getMessage());
 		} else {
@@ -189,7 +189,7 @@ public class ListIdentifiers extends ServerVerb {
 	    if (listIdentifiersMap != null) {
 		sb.append(getRequestElement(request, validParamNames, baseURL, xmlEncodeSetSpec));
 		if (hasBadArguments(request, requiredParamNames.iterator(),
-				    validParamNames)) {
+				    validParamNames, abstractCatalog)) {
 		    sb.append(new BadArgumentException().getMessage());
 		} else {
 		    sb.append("<ListIdentifiers>");
@@ -197,7 +197,7 @@ public class ListIdentifiers extends ServerVerb {
 		    while (identifiers.hasNext()) {
 			sb.append((String)identifiers.next());
 		    }
-		    
+
 		    Map newResumptionMap = (Map)listIdentifiersMap.get("resumptionMap");
 		    if (newResumptionMap != null) {
 			String newResumptionToken = (String)newResumptionMap.get("resumptionToken");
