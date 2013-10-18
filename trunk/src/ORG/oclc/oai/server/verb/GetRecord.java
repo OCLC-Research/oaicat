@@ -37,7 +37,7 @@ public class GetRecord extends ServerVerb {
 	validParamNames.add("identifier");
 	validParamNames.add("metadataPrefix");
     }
-    
+
     /**
      * Construct the xml response on the server-side.
      *
@@ -98,7 +98,7 @@ public class GetRecord extends ServerVerb {
 	try {
 	    if (metadataPrefix == null || metadataPrefix.length() == 0
 		|| identifier == null || identifier.length() == 0
-		|| hasBadArguments(request, validParamNames.iterator(), validParamNames)) {
+		|| hasBadArguments(request, validParamNames.iterator(), validParamNames, abstractCatalog)) {
 		throw new BadArgumentException();
 	    }
 	    else if (!crosswalks.containsValue(metadataPrefix)) {

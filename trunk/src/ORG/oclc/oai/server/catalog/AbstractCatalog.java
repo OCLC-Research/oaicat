@@ -47,22 +47,22 @@ public abstract class AbstractCatalog {
      * native "item" to the various metadataFormats to be supported.
      */
     private RecordFactory recordFactory;
-    
+
     /**
      * is this repository harvestable?
      */
     private boolean harvestable = true;
-    
+
     /**
      * optional property to limit the life of resumptionTokens (<0 indicates no limit)
      **/
     private int millisecondsToLive = -1;
-    
+
     /**
      * Index into VALID_GRANULARITIES and FROM_GRANULARITIES
      */
     private int supportedGranularityOffset = -1;
-    
+
     /**
      * All possible valid granularities
      */
@@ -70,7 +70,7 @@ public abstract class AbstractCatalog {
         "YYYY-MM-DD",
         "YYYY-MM-DDThh:mm:ssZ"
     };
-    
+
     /**
      * minimum valid 'from' granularities
      */
@@ -78,42 +78,51 @@ public abstract class AbstractCatalog {
         "0000-01-01",
         "0000-01-01T00:00:00Z"
     };
-    
+
+    /**
+     * Default regex pattern for validating parameters (can be overridden using an AbstractCatalog.paramRegex property
+     */
+    private String paramRegex = "^[a-zA-Z0-9\\.\\/\\:\\_\\-]*$";
+
     /**
      * return a handle to the RecordFactory
      * @return guess
      */
     public RecordFactory getRecordFactory() { return recordFactory; }
-    
+
     public void setHarvestable(boolean harvestable) {
         this.harvestable = harvestable;
     }
-    
+
+    public void setParamRegex(String s) {
+    	this.paramRegex = s;
+    }
+
     /**
      * Is this repository harvestable?
      * @return true if harvestable, false otherwise.
      */
     public boolean isHarvestable() { return harvestable; }
-    
+
     /**
      * get the optional millisecondsToLive property (<0 indicates no limit)
      **/
     public int getMillisecondsToLive() { return millisecondsToLive; }
-    
+
     public void setRecordFactory(RecordFactory recordFactory) {
         this.recordFactory = recordFactory;
     }
-    
+
     public void setSupportedGranularityOffset(int i) {
         supportedGranularityOffset = i;
     }
-    
+
     /**
      * Convert the requested 'from' parameter to the finest granularity supported
      * by this repository.
      * @exception BadArgumentException one or more of the arguments are bad.
      */
-    public String toFinestFrom(String from) 
+    public String toFinestFrom(String from)
     throws BadArgumentException {
         if (debug) {
             System.out.println("AbstractCatalog.toFinestFrom: from=" + from);
@@ -126,18 +135,18 @@ public abstract class AbstractCatalog {
             StringBuffer sb = new StringBuffer(from);
             if (sb.charAt(sb.length()-1) == 'Z')
                 sb.setLength(sb.length()-1);
-            
+
             sb.append(FROM_GRANULARITIES[supportedGranularityOffset].substring(sb.length()));
             from = sb.toString();
         }
-        
+
         if (!isValidGranularity(from)) {
             throw new BadArgumentException();
         }
-        
+
         return from;
     }
-    
+
     /**
      * Convert the requested 'until' paramter to the finest granularity supported
      * by this repository
@@ -153,11 +162,11 @@ public abstract class AbstractCatalog {
         if (until.length() > VALID_GRANULARITIES[supportedGranularityOffset].length()) {
             throw new BadArgumentException();
         }
-        
+
         StringBuffer sb = new StringBuffer(until);
         if (sb.charAt(sb.length()-1) == 'Z')
             sb.setLength(sb.length()-1);
-        
+
         if (sb.length() < VALID_GRANULARITIES[0].length()) {
             while (sb.length() < 4) sb.append("9");
             switch (sb.length()) {
@@ -170,20 +179,20 @@ public abstract class AbstractCatalog {
             case 8: // YYYY-MM-
                 sb.append("31");
                 break;
-                
+
             case 6: // YYYY-M
             case 9: // YYYY-MM-D
                 throw new BadArgumentException();
             }
         }
-        
+
         until = sb.toString();
         if (until.length() == VALID_GRANULARITIES[supportedGranularityOffset].length()) {
             if (!isValidGranularity(until))
                 throw new BadArgumentException();
             return until;
         }
-        
+
         if (sb.length() < VALID_GRANULARITIES[1].length()) {
             switch (sb.length()) {
             case 10: // YYYY-MM-DD
@@ -197,23 +206,23 @@ public abstract class AbstractCatalog {
 //              case 16: // YYYY-MM-DDThh:mm
 //              sb.append("Z");
 //              break;
-                
+
 //              case 12: // YYYY-MM-DDTh
 //              case 15: // YYYY-MM-DDThh:m
 //              throw new BadGranularityException();
 //              }
 //              }
-                
+
 //              until = sb.toString();
 //              if (until.length() == VALID_GRANULARITIES[supportedGranularityOffset].length()) {
 //              if (!isValidGranularity(until))
 //              throw new BadGranularityException();
 //              return until;
 //              }
-                
+
 //              if (sb.charAt(sb.length()-1) == 'Z')
 //              sb.setLength(sb.length()-1); // remove the trailing 'Z'
-                
+
 //              if (sb.length() < VALID_GRANULARITIES[2].length()) {
 //              switch (sb.length()) {
             case 16: // YYYY-MM-DDThh:mm
@@ -223,22 +232,22 @@ public abstract class AbstractCatalog {
             case 19: // YYYY-MM-DDThh:mm:ss
                 sb.append("Z");
                 break;
-                
+
             case 18: // YYYY-MM-DDThh:mm:s
                 throw new BadArgumentException();
             }
         }
-        
+
 //      until = sb.toString();
 //      if (until.length() == VALID_GRANULARITIES[supportedGranularityOffset].length()) {
 //      if (!isValidGranularity(until))
 //      throw new BadGranularityException();
 //      return until;
 //      }
-        
+
 //      if (sb.charAt(sb.length()-1) == 'Z')
 //      sb.setLength(sb.length()-1); // remove the trailing 'Z'
-        
+
 //      switch (sb.length()) {
 //      case 19: // YYYY-MM-DDThh:mm:ss
 //      sb.append(".");
@@ -248,13 +257,13 @@ public abstract class AbstractCatalog {
 //      sb.append("Z");
 //      break;
 //      }
-        
+
         until = sb.toString();
         if (!isValidGranularity(until))
             throw new BadArgumentException();
         return until;
     }
-    
+
     /**
      * Does the specified date conform to the supported granularity of this repository?
      * @param date a UTC date
@@ -264,7 +273,7 @@ public abstract class AbstractCatalog {
     private boolean isValidGranularity(String date) {
         if (date.length() > VALID_GRANULARITIES[supportedGranularityOffset].length())
             return false;
-        
+
         if (date.length() < VALID_GRANULARITIES[0].length()
                 || !Character.isDigit(date.charAt(0)) // YYYY
                 || !Character.isDigit(date.charAt(1))
@@ -278,7 +287,7 @@ public abstract class AbstractCatalog {
                         || !Character.isDigit(date.charAt(9))) {
             return false;
         }
-        
+
         if (date.length() > VALID_GRANULARITIES[0].length()) {
             if (date.charAt(10) != 'T'
                 || date.charAt(date.length()-1) != 'Z'
@@ -291,7 +300,7 @@ public abstract class AbstractCatalog {
 //                      return false;
 //                      }
 //                      }
-                        
+
 //                      if (date.length() > VALID_GRANULARITIES[1].length()) {
 //                      if (
                         || date.charAt(16) != ':'
@@ -300,17 +309,17 @@ public abstract class AbstractCatalog {
                 return false;
             }
         }
-        
+
 //      if (date.length() > VALID_GRANULARITIES[2].length()) {
 //      if (date.charAt(19) != '.'
 //      || !Character.isDigit(date.charAt(20))) { // s
 //      return false;
 //      }
-        
+
 //      }
         return true;
     }
-    
+
     /**
      * Retrieve the Crosswalks property
      *
@@ -318,28 +327,28 @@ public abstract class AbstractCatalog {
      * formats supported by this application.
      */
     public Crosswalks getCrosswalks() { return recordFactory.getCrosswalks(); }
-    
+
     /**
      * Retrieve the list of supported Sets. This should probably be initialized
      * by the constructor from the properties object that is passed to it.
      *
-     * @return a Map object containing <setSpec> values as the Map keys and 
+     * @return a Map object containing <setSpec> values as the Map keys and
      * <setName> values for the corresponding the Map values.
      * @exception NoSetHierarchyException No sets are defined for this repository
      * @exception OAIInternalServerError An error occurred
      */
     public abstract Map listSets() throws NoSetHierarchyException, OAIInternalServerError;
-    
+
     /**
      * Retrieve the next cluster of supported sets.
-     * @return a Map object containing <setSpec> values as the Map keys and 
+     * @return a Map object containing <setSpec> values as the Map keys and
      * <setName> values for the corresponding the Map values.
      * @exception BadResumptionTokenException The resumptionToken is bad.
      * @exception OAIInternalServerError An error occurred
      */
     public abstract Map listSets(String resumptionToken)
     throws BadResumptionTokenException, OAIInternalServerError;
-    
+
     /**
      * Factory method for creating an AbstractCatalog instance. The properties
      * object must contain the following entries:
@@ -429,16 +438,16 @@ public abstract class AbstractCatalog {
         }
         return oaiCatalog;
     }
-    
+
     /**
      * Allow the database to return some Identify &lt;description&gt; elements
-     * 
+     *
      * @return an XML String fragment containing description elements
      */
     public String getDescriptions() {
         return null;
     }
-    
+
     /**
      * Retrieve a list of schemaLocation values associated with the specified
      * identifier.
@@ -452,7 +461,7 @@ public abstract class AbstractCatalog {
      */
     public abstract Vector getSchemaLocations(String identifier)
     throws IdDoesNotExistException, NoMetadataFormatsException, OAIInternalServerError;
-    
+
     /**
      * Retrieve a list of Identifiers that satisfy the criteria parameters
      *
@@ -474,7 +483,7 @@ public abstract class AbstractCatalog {
     public abstract Map listIdentifiers(String from, String until, String set, String metadataPrefix)
     throws BadArgumentException, CannotDisseminateFormatException, NoItemsMatchException,
     NoSetHierarchyException, OAIInternalServerError;
-    
+
     /**
      * Retrieve the next set of Identifiers associated with the resumptionToken
      *
@@ -489,7 +498,7 @@ public abstract class AbstractCatalog {
      */
     public abstract Map listIdentifiers(String resumptionToken)
     throws BadResumptionTokenException, OAIInternalServerError;
-    
+
     /**
      * Retrieve the specified metadata for the specified identifier
      *
@@ -502,23 +511,23 @@ public abstract class AbstractCatalog {
      */
     public abstract String getRecord(String identifier, String metadataPrefix)
     throws IdDoesNotExistException, CannotDisseminateFormatException, OAIInternalServerError;
-    
+
     /**
      * Retrieve the specified metadata for the specified identifier
      *
      * @param identifier the OAI identifier
      * @return the String containing the result record.
      * @exception OAIInternalServerError signals an http status code 500 problem
-     * @throws CannotDisseminateFormatException 
-     * @throws IdDoesNotExistException 
-     * @throws IdDoesNotExistException 
+     * @throws CannotDisseminateFormatException
+     * @throws IdDoesNotExistException
+     * @throws IdDoesNotExistException
      */
     public String getMetadata(String identifier, String metadataPrefix)
     throws OAIInternalServerError, IdDoesNotExistException,
     IdDoesNotExistException, CannotDisseminateFormatException {
         throw new OAIInternalServerError("You need to override AbstractCatalog.getMetadata()");
     }
-    
+
     /**
      * Retrieve a list of records that satisfy the specified criteria
      *
@@ -545,10 +554,10 @@ public abstract class AbstractCatalog {
         Map listIdentifiersMap = listIdentifiers(from, until, set, metadataPrefix);
         String resumptionToken = (String)listIdentifiersMap.get("resumptionToken");
         Iterator identifiers = (Iterator)listIdentifiersMap.get("identifiers");
-        
+
         Map listRecordsMap = new HashMap();
         ArrayList records = new ArrayList();
-        
+
         while (identifiers.hasNext()) {
             String identifier = (String)identifiers.next();
             try {
@@ -564,7 +573,7 @@ public abstract class AbstractCatalog {
         }
         return listRecordsMap;
     }
-    
+
     /**
      * Retrieve the next set of records associated with the resumptionToken
      *
@@ -582,10 +591,10 @@ public abstract class AbstractCatalog {
         resumptionToken = (String)listIdentifiersMap.get("resumptionToken");
         Iterator identifiers = (Iterator)listIdentifiersMap.get("identifiers");
         String metadataPrefix = (String)listIdentifiersMap.get("metadataPrefix");
-        
+
         Map listRecordsMap = new HashMap();
         ArrayList records = new ArrayList();
-        
+
         while (identifiers.hasNext()) {
             String identifier = (String)identifiers.next();
             try {
@@ -604,11 +613,11 @@ public abstract class AbstractCatalog {
         }
         return listRecordsMap;
     }
-    
+
     public Map getResumptionMap(String resumptionToken) {
         return getResumptionMap(resumptionToken, -1, -1);
     }
-    
+
     public Map getResumptionMap(String resumptionToken, int completeListSize, int cursor) {
         Map resumptionMap = null;
         if (resumptionToken != null) {
@@ -628,9 +637,24 @@ public abstract class AbstractCatalog {
         }
         return resumptionMap;
     }
-    
+
     /**
      * close the repository
      */
     public abstract void close();
+
+    /**
+     * Validate the parameter value
+     * The default regex pattern can be overridden by setting a AbstractCatalog.paramRegex property
+     *
+     * @param key
+     * @param value
+     * @return true if the parameter is valid, false if not
+     */
+	public boolean isValidParam(String key, String value) {
+		if (paramRegex != null && paramRegex.length() > 0) {
+			return value.matches(paramRegex);
+		}
+		return true;
+	}
 }

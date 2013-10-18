@@ -35,7 +35,7 @@ public class Identify extends ServerVerb {
     static {
         validParamNames.add("verb");
     }
-    
+
     /**
      * Construct the xml response on the server side.
      *
@@ -80,7 +80,7 @@ public class Identify extends ServerVerb {
 //      sb.append(getRequestURL(request));
 //      sb.append("</requestURL>");
         sb.append(getRequestElement(request, validParamNames, baseURL));
-        if (hasBadArguments(request, validParamNames.iterator(), validParamNames)) {
+        if (hasBadArguments(request, validParamNames.iterator(), validParamNames, abstractCatalog)) {
             sb.append(new BadArgumentException().getMessage());
         } else {
             sb.append("<Identify>");

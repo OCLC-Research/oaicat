@@ -33,6 +33,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import ORG.oclc.oai.server.catalog.AbstractCatalog;
 import ORG.oclc.oai.util.OAIUtil;
 //import javax.servlet.http.HttpUtils;
 
@@ -164,7 +165,8 @@ public abstract class ServerVerb {
 
     protected static boolean hasBadArguments(HttpServletRequest request,
             Iterator requiredParamNames,
-            List validParamNames) {
+            List validParamNames,
+            AbstractCatalog catalog) {
         while (requiredParamNames.hasNext()) {
             String name = (String)requiredParamNames.next();
             String value = request.getParameter(name);
@@ -175,10 +177,13 @@ public abstract class ServerVerb {
         Enumeration params = request.getParameterNames();
         while (params.hasMoreElements()) {
             String name = (String)params.nextElement();
+            String[] values = request.getParameterValues(name);
             if (!validParamNames.contains(name)) {
                 return true;
-            } else if (request.getParameterValues(name).length > 1) {
+            } else if (values.length > 1) {
                 return true;
+            } else if (values.length == 1 && !catalog.isValidParam(name, values[0])) {
+            	return true;
             }
         }
         String identifier = request.getParameter("identifier");

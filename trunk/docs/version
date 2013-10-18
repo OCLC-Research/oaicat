@@ -1,5 +1,9 @@
 OAICat version file. This file records major changes to the OAICat software.
 
+2013-10-18 1.5.62
+Bug fix:
+- Added a AbstractCatalog.paramRegex property to address an SQL injection vulnerability that was reported by Ward van Wanrooij. [https://code.google.com/p/oaicat/issues/detail?id=7]
+
 2013-04-18 1.5.61
 Enhancement:
 - change mechanism for locating the oaicat.properties configuration file.
