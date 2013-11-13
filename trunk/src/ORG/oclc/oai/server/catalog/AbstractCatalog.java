@@ -82,7 +82,7 @@ public abstract class AbstractCatalog {
     /**
      * Default regex pattern for validating parameters (can be overridden using an AbstractCatalog.paramRegex property
      */
-    private String paramRegex = "^[a-zA-Z0-9\\.\\/\\:\\_\\-]*$";
+    private String paramRegex = "^[a-zA-Z0-9\\.\\/\\:\\_\\-!]*$";
 
     /**
      * return a handle to the RecordFactory
