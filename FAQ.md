@@ -1,0 +1,3 @@
+# OAICat FAQ #
+## I installed the demo, but I get a ServletException (HTTP status 500) when I perform a request and there is a NullPointerException in the logs ##
+The demo is configured to use relative paths to files that it needs in order to run. One solution is to invoke the startup script with $TOMCAT\_HOME as the default directory (i.e. 'cd $TOMCAT\_HOME; bin/startup.sh). If this isn't practical for some reason, change the webapps/oaicat/WEB-INF/web.xml and oaicat.properties files to use absolute paths in place of relative paths.
